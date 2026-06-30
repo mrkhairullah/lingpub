@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+    <head>
+        <base target="_top" />
+        <?!= include('ExportReportModalStylesheet'); ?>
+    </head>
+    <body>
+        <div>
+            <!-- Form: form-load-data -->
+            <form id="form-load-data" class="form">
+                <!-- Input: start-date -->
+                <div class="form__field">
+                    <label for="start-date" class="form__field__label">Tanggal Awal</label>
+                    <input type="datetime-local" id="start-date" name="start-date" class="form__field__input" />
+                </div>
+
+                <!-- Input: end-date -->
+                <div class="form__field">
+                    <label for="end-date" class="form__field__label">Tanggal Akhir</label>
+                    <input type="datetime-local" id="end-date" name="end-date" class="form__field__input" />
+                </div>
+
+                <!-- Input: report-status -->
+                <div class="form__field">
+                    <label for="report-status" class="form__field__label">Status Laporan</label>
+                    <select id="report-status" name="report-status" class="form__field__input">
+                        <option value="" selected>Semua Status</option>
+                        <option value="Belum Diperiksa">Belum Diperiksa</option>
+                        <option value="Sedang Diperiksa">Sedang Diperiksa</option>
+                        <option value="Sudah Diperiksa">Sudah Diperiksa</option>
+                    </select>
+                </div>
+
+                <div class="form__field__actions">
+                    <button class="form__button form__button--secondary" type="reset">Atur Ulang</button>
+                    <button class="form__button form__button--primary" type="reset">Proses</button>
+                </div>
+            </form>
+
+            <!-- Form: form-export-report -->
+            <form id="form-export-report" class="form form--hidden">
+                <!-- Input: paper-size -->
+                <div class="form__field">
+                    <label for="paper-size" class="form__field__label">Ukuran Kertas</label>
+                    <select id="paper-size" name="paper-size" class="form__field__input">
+                        <option value="A4" selected>A4</option>
+                        <option value="letter">Letter</option>
+                        <option value="legal">Legal</option>
+                    </select>
+                </div>
+
+                <!-- Input: paper-orientation -->
+                <div class="form__field">
+                    <label for="paper-orientation-portrait" class="form__field__label">Orientasi Kertas</label>
+                    <div class="form__field__container">
+                        <div class="form__field__container__group">
+                            <input
+                                type="radio"
+                                name="paper-orientation"
+                                id="paper-orientation-portrait"
+                                value="paper-orientation-portrait"
+                                checked
+                            />
+                            <label for="paper-orientation-portrait">Potret</label>
+                        </div>
+                        <div class="form__field__container__group">
+                            <input
+                                type="radio"
+                                name="paper-orientation"
+                                id="paper-orientation-landscape"
+                                value="paper-orientation-landscape"
+                            />
+                            <label for="paper-orientation-landscape">Lanskap</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Input: include-maintenance-progress-report -->
+                <div class="form__field form__field--inline">
+                    <input
+                        type="checkbox"
+                        id="include-maintenance-progress-report"
+                        name="include-maintenance-progress-report"
+                        class="form__field__input"
+                        checked
+                    />
+                    <label for="include-maintenance-progress-report" class="form__field__label">
+                        Sertakan Laporan Progres Pemeliharaan
+                    </label>
+                </div>
+
+                <div class="form__field__actions">
+                    <button class="form__button form__button--secondary" type="reset">Atur Ulang</button>
+                    <button class="form__button form__button--primary" type="reset">Proses</button>
+                </div>
+            </form>
+        </div>
+
+        <?!= include('ExportReportModalClientScript'); ?>
+    </body>
+</html>

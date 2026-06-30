@@ -1,0 +1,131 @@
+<style>
+    .form {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color: #212529;
+        margin-bottom: 16px;
+    }
+
+    .form--hidden {
+        display: none;
+    }
+
+    .form__field {
+        margin-bottom: 14px;
+    }
+
+    .form__field--inline,
+    .form__field__container,
+    .form__field__container__group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .form__field__label {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 500;
+        color: #212529;
+    }
+
+    .form__field__container > .form__field__label {
+        margin-bottom: 0;
+    }
+
+    .form__field__input {
+        display: block;
+        width: 100%;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        transition:
+            border-color 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out;
+        box-sizing: border-box;
+    }
+
+    .form__field__input:focus {
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    .form__field__container > .form__field__input {
+        width: auto;
+        flex-shrink: 0;
+    }
+
+    select.form__field__input {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 12px 12px;
+        padding-right: 32px;
+    }
+
+    input[type='checkbox'].form__field__input,
+    input[type='radio'].form__field__input {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .form__field__actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+        align-items: center;
+        justify-content: end;
+    }
+
+    .form__button {
+        display: inline-block;
+        padding: 6px 16px;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        background-color: #6c757d;
+        color: #fff;
+        transition:
+            background-color 0.15s ease-in-out,
+            border-color 0.15s ease-in-out;
+    }
+
+    .form__button--primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .form__button--primary:hover {
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+
+    .form__button--primary:active {
+        background-color: #0a58ca;
+    }
+
+    .form__button--secondary {
+        background-color: #fff;
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .form__button--secondary:hover {
+        background-color: #6c757d;
+        color: #fff;
+    }
+</style>
