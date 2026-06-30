@@ -1,5 +1,198 @@
 <script>
-    window.addEventListener('load', function () {
-        console.log('ExportReportModal is connected');
-    });
+    (function () {
+        'use strict';
+
+        const els = {
+            modalTitle: document.getElementById('modal-title'),
+            formLoadData: document.getElementById('form-load-data'),
+            formExportReport: document.getElementById('form-export-report'),
+            startDate: document.getElementById('start-date'),
+            endDate: document.getElementById('end-date'),
+            reportStatus: document.getElementById('report-status'),
+            loadDataError: document.getElementById('form-load-data-error'),
+            btnLoadData: document.getElementById('btn-load-data'),
+            reportTableBody: document.getElementById('report-table-body'),
+            reportTableEmpty: document.getElementById('report-table-empty'),
+            selectAll: document.getElementById('select-all-reports'),
+            exportError: document.getElementById('form-export-report-error'),
+            btnBack: document.getElementById('btn-back-to-filter'),
+            btnProcessExport: document.getElementById('btn-process-export'),
+            paperSize: document.getElementById('paper-size'),
+            includeProgress: document.getElementById('include-maintenance-progress-report'),
+        };
+
+        function toISODate(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return y + '-' + m + '-' + d;
+        }
+
+        function setDefaultDateRange() {
+            const today = new Date();
+            const oneWeekAgo = new Date(today);
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            els.startDate.value = toISODate(oneWeekAgo);
+            els.endDate.value = toISODate(today);
+        }
+
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, function (match) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[match];
+            });
+        }
+
+        function showError(el, message) {
+            el.textContent = message;
+            el.classList.add('form__error--visible');
+        }
+
+        function hideError(el) {
+            el.textContent = '';
+            el.classList.remove('form__error--visible');
+        }
+
+        function setButtonLoading(button, isLoading, loadingText, idleText) {
+            button.disabled = isLoading;
+            button.textContent = isLoading ? loadingText : idleText;
+        }
+
+        function validateDateRange() {
+            hideError(els.loadDataError);
+
+            if (!els.startDate.value || !els.endDate.value) {
+                showError(els.loadDataError, 'Tanggal Awal dan Tanggal Akhir wajib diisi.');
+                return false;
+            }
+            if (els.startDate.value > els.endDate.value) {
+                showError(els.loadDataError, 'Tanggal Awal tidak boleh lebih besar dari Tanggal Akhir.');
+                return false;
+            }
+            return true;
+        }
+
+        function renderReportTable(reports) {
+            els.reportTableBody.innerHTML = '';
+
+            if (reports.length === 0) {
+                els.reportTableEmpty.style.display = 'block';
+                els.selectAll.checked = false;
+                els.selectAll.disabled = true;
+                return;
+            }
+
+            els.reportTableEmpty.style.display = 'none';
+            els.selectAll.disabled = false;
+            els.selectAll.checked = false;
+
+            reports.forEach(function (report, index) {
+                const tr = document.createElement('tr');
+                tr.innerHTML =
+                    '<td class="table__cell table__cell--checkbox">' +
+                    '<input type="checkbox" class="report-row-checkbox" data-id="' +
+                    escapeHtml(report.id) +
+                    '" />' +
+                    '</td>' +
+                    '<td class="table__cell">' +
+                    (index + 1) +
+                    '</td>' +
+                    '<td class="table__cell">' +
+                    escapeHtml(report.id) +
+                    '</td>' +
+                    '<td class="table__cell">' +
+                    escapeHtml(report.date) +
+                    '</td>' +
+                    '<td class="table__cell">' +
+                    escapeHtml(report.title || '-') +
+                    '</td>' +
+                    '<td class="table__cell">' +
+                    escapeHtml(report.status) +
+                    '</td>';
+                els.reportTableBody.appendChild(tr);
+            });
+        }
+
+        function getCheckedReportIds() {
+            return Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(function (cb) {
+                return cb.dataset.id;
+            });
+        }
+
+        function goToStepExport() {
+            els.formLoadData.classList.add('form--hidden');
+            els.formExportReport.classList.remove('form--hidden');
+            els.modalTitle.textContent = 'Konfigurasi & Pilih Laporan';
+        }
+
+        function goToStepFilter() {
+            els.formExportReport.classList.add('form--hidden');
+            els.formLoadData.classList.remove('form--hidden');
+            els.modalTitle.textContent = 'Filter Laporan';
+            hideError(els.exportError);
+        }
+
+        function handleLoadData() {
+            if (!validateDateRange()) return;
+
+            setButtonLoading(els.btnLoadData, true, 'Memuat...', 'Cari Laporan');
+
+            google.script.run
+                .withSuccessHandler(function (reports) {
+                    setButtonLoading(els.btnLoadData, false, 'Memuat...', 'Cari Laporan');
+                    renderReportTable(reports);
+                    goToStepExport();
+                })
+                .withFailureHandler(function (err) {
+                    setButtonLoading(els.btnLoadData, false, 'Memuat...', 'Cari Laporan');
+                    showError(els.loadDataError, 'Gagal memuat data: ' + err.message);
+                })
+                .getFilteredReports({
+                    tanggalAwal: els.startDate.value,
+                    tanggalAkhir: els.endDate.value,
+                    status: els.reportStatus.value,
+                });
+        }
+
+        function handleProcessExport() {
+            hideError(els.exportError);
+
+            const ids = getCheckedReportIds();
+            if (ids.length === 0) {
+                showError(els.exportError, 'Pilih minimal satu laporan untuk diekspor.');
+                return;
+            }
+
+            const orientationInput = document.querySelector('input[name="paper-orientation"]:checked');
+
+            setButtonLoading(els.btnProcessExport, true, 'Mengekspor...', 'Ekspor Laporan');
+
+            google.script.run
+                .withSuccessHandler(function () {
+                    google.script.host.close();
+                })
+                .withFailureHandler(function (err) {
+                    setButtonLoading(els.btnProcessExport, false, 'Mengekspor...', 'Ekspor Laporan');
+                    showError(els.exportError, err.message);
+                })
+                .processExport({
+                    ids: ids,
+                    paperSize: els.paperSize.value,
+                    orientation: orientationInput.value,
+                    includeProgress: els.includeProgress.checked,
+                });
+        }
+
+        els.startDate.addEventListener('change', validateDateRange);
+        els.endDate.addEventListener('change', validateDateRange);
+        els.btnLoadData.addEventListener('click', handleLoadData);
+        els.btnBack.addEventListener('click', goToStepFilter);
+        els.btnProcessExport.addEventListener('click', handleProcessExport);
+        els.selectAll.addEventListener('change', function () {
+            document.querySelectorAll('.report-row-checkbox').forEach(function (cb) {
+                cb.checked = els.selectAll.checked;
+            });
+        });
+
+        window.addEventListener('load', setDefaultDateRange);
+    })();
 </script>

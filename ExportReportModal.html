@@ -5,95 +5,134 @@
         <?!= include('ExportReportModalStylesheet'); ?>
     </head>
     <body>
-        <div>
-            <!-- Form: form-load-data -->
-            <form id="form-load-data" class="form">
-                <!-- Input: start-date -->
-                <div class="form__field">
-                    <label for="start-date" class="form__field__label">Tanggal Awal</label>
-                    <input type="date" id="start-date" name="start-date" class="form__field__input" />
-                </div>
+        <div class="modal">
+            <header class="modal__header">
+                <h1 class="modal__title" id="modal-title">Filter Laporan</h1>
+            </header>
 
-                <!-- Input: end-date -->
-                <div class="form__field">
-                    <label for="end-date" class="form__field__label">Tanggal Akhir</label>
-                    <input type="date" id="end-date" name="end-date" class="form__field__input" />
-                </div>
-
-                <!-- Input: report-status -->
-                <div class="form__field">
-                    <label for="report-status" class="form__field__label">Status Laporan</label>
-                    <select id="report-status" name="report-status" class="form__field__input">
-                        <option value="" selected>Semua Status</option>
-                        <option value="Belum Diperiksa">Belum Diperiksa</option>
-                        <option value="Sedang Diperiksa">Sedang Diperiksa</option>
-                        <option value="Sudah Diperiksa">Sudah Diperiksa</option>
-                    </select>
-                </div>
-
-                <div class="form__field__actions">
-                    <button class="form__button form__button--secondary" type="reset">Atur Ulang</button>
-                    <button class="form__button form__button--primary" type="button">Proses</button>
-                </div>
-            </form>
-
-            <!-- Form: form-export-report -->
-            <form id="form-export-report" class="form form--hidden">
-                <!-- Input: paper-size -->
-                <div class="form__field">
-                    <label for="paper-size" class="form__field__label">Ukuran Kertas</label>
-                    <select id="paper-size" name="paper-size" class="form__field__input">
-                        <option value="A4" selected>A4</option>
-                        <option value="letter">Letter</option>
-                        <option value="legal">Legal</option>
-                    </select>
-                </div>
-
-                <!-- Input: paper-orientation -->
-                <div class="form__field">
-                    <label for="paper-orientation-portrait" class="form__field__label">Orientasi Kertas</label>
-                    <div class="form__field__container">
-                        <div class="form__field__container__group">
-                            <input
-                                type="radio"
-                                name="paper-orientation"
-                                id="paper-orientation-portrait"
-                                value="paper-orientation-portrait"
-                                checked
-                            />
-                            <label for="paper-orientation-portrait">Potret</label>
+            <main class="modal__body">
+                <!-- Step 1: Filter -->
+                <form id="form-load-data" class="form">
+                    <div class="form__row">
+                        <!-- Input: start-date -->
+                        <div class="form__field">
+                            <label for="start-date" class="form__field__label">Tanggal Awal</label>
+                            <input type="date" id="start-date" name="start-date" class="form__field__input" required />
                         </div>
-                        <div class="form__field__container__group">
-                            <input
-                                type="radio"
-                                name="paper-orientation"
-                                id="paper-orientation-landscape"
-                                value="paper-orientation-landscape"
-                            />
-                            <label for="paper-orientation-landscape">Lanskap</label>
+
+                        <!-- Input: end-date -->
+                        <div class="form__field">
+                            <label for="end-date" class="form__field__label">Tanggal Akhir</label>
+                            <input type="date" id="end-date" name="end-date" class="form__field__input" required />
+                        </div>
+
+                        <!-- Input: report-status -->
+                        <div class="form__field">
+                            <label for="report-status" class="form__field__label">Status Laporan</label>
+                            <select id="report-status" name="report-status" class="form__field__input">
+                                <option value="" selected>Semua Status</option>
+                                <option value="Belum Diperiksa">Belum Diperiksa</option>
+                                <option value="Sedang Diperiksa">Sedang Diperiksa</option>
+                                <option value="Sudah Diperiksa">Sudah Diperiksa</option>
+                            </select>
                         </div>
                     </div>
-                </div>
 
-                <!-- Input: include-maintenance-progress-report -->
-                <div class="form__field form__field--inline">
-                    <input
-                        type="checkbox"
-                        id="include-maintenance-progress-report"
-                        name="include-maintenance-progress-report"
-                        class="form__field__input"
-                        checked
-                    />
-                    <label for="include-maintenance-progress-report" class="form__field__label">
-                        Sertakan Laporan Progres Pemeliharaan
-                    </label>
-                </div>
+                    <p class="form__error" id="form-load-data-error"></p>
 
-                <div class="form__field__actions">
-                    <button class="form__button form__button--secondary" type="reset">Atur Ulang</button>
-                    <button class="form__button form__button--primary" type="button">Proses</button>
-                </div>
-            </form>
+                    <div class="form__field__actions">
+                        <button class="form__button form__button--secondary" type="reset">Atur Ulang</button>
+                        <button class="form__button form__button--primary" type="button" id="btn-load-data">
+                            Cari Laporan
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Step 2: Konfigurasi & Pilih Laporan -->
+                <form id="form-export-report" class="form form--hidden">
+                    <div class="form__row">
+                        <!-- Input: paper-size -->
+                        <div class="form__field">
+                            <label for="paper-size" class="form__field__label">Ukuran Kertas</label>
+                            <select id="paper-size" name="paper-size" class="form__field__input">
+                                <option value="A4" selected>A4</option>
+                                <option value="letter">Letter</option>
+                                <option value="legal">Legal</option>
+                            </select>
+                        </div>
+
+                        <!-- Input: paper-orientation -->
+                        <div class="form__field">
+                            <label class="form__field__label">Orientasi Kertas</label>
+                            <div class="form__field__container">
+                                <div class="form__field__container__group">
+                                    <input
+                                        type="radio"
+                                        name="paper-orientation"
+                                        id="paper-orientation-portrait"
+                                        value="portrait"
+                                        checked
+                                    />
+                                    <label for="paper-orientation-portrait">Potret</label>
+                                </div>
+                                <div class="form__field__container__group">
+                                    <input
+                                        type="radio"
+                                        name="paper-orientation"
+                                        id="paper-orientation-landscape"
+                                        value="landscape"
+                                    />
+                                    <label for="paper-orientation-landscape">Lanskap</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Input: include-maintenance-progress-report -->
+                        <div class="form__field form__field--inline">
+                            <input
+                                type="checkbox"
+                                id="include-maintenance-progress-report"
+                                name="include-maintenance-progress-report"
+                                class="form__field__input"
+                                checked
+                            />
+                            <label for="include-maintenance-progress-report" class="form__field__label">
+                                Sertakan Laporan Progres Pemeliharaan
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="table" id="report-table">
+                            <thead>
+                                <tr>
+                                    <th class="table__cell table__cell--checkbox">
+                                        <input type="checkbox" id="select-all-reports" />
+                                    </th>
+                                    <th class="table__cell">No</th>
+                                    <th class="table__cell">ID Laporan</th>
+                                    <th class="table__cell">Tanggal</th>
+                                    <th class="table__cell">Judul Laporan</th>
+                                    <th class="table__cell">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="report-table-body"></tbody>
+                        </table>
+                        <p class="table__empty" id="report-table-empty">Tidak ada laporan yang sesuai dengan filter.</p>
+                    </div>
+
+                    <p class="form__error" id="form-export-report-error"></p>
+
+                    <div class="form__field__actions">
+                        <button class="form__button form__button--secondary" type="button" id="btn-back-to-filter">
+                            Kembali
+                        </button>
+                        <button class="form__button form__button--primary" type="button" id="btn-process-export">
+                            Ekspor Laporan
+                        </button>
+                    </div>
+                </form>
+            </main>
         </div>
 
         <?!= include('ExportReportModalClientScript'); ?>

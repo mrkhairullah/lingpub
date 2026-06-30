@@ -1,6 +1,40 @@
 <style>
-    .form {
+    * {
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+    }
+
+    .modal {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 24px 32px;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .modal__header {
+        margin-bottom: 16px;
+        flex-shrink: 0;
+    }
+
+    .modal__title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #212529;
+        margin: 0;
+    }
+
+    .modal__body {
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .form {
         font-size: 14px;
         color: #212529;
         margin-bottom: 16px;
@@ -8,6 +42,17 @@
 
     .form--hidden {
         display: none;
+    }
+
+    .form__row {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .form__row > .form__field {
+        flex: 1;
+        min-width: 200px;
     }
 
     .form__field {
@@ -20,6 +65,10 @@
         display: flex;
         align-items: center;
         gap: 8px;
+    }
+
+    .form__field--inline {
+        flex: 1 1 100%;
     }
 
     .form__field__label {
@@ -86,6 +135,17 @@
         justify-content: end;
     }
 
+    .form__error {
+        font-size: 13px;
+        color: #dc3545;
+        margin: -6px 0 12px;
+        display: none;
+    }
+
+    .form__error--visible {
+        display: block;
+    }
+
     .form__button {
         display: inline-block;
         padding: 6px 16px;
@@ -104,17 +164,22 @@
             border-color 0.15s ease-in-out;
     }
 
+    .form__button:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+
     .form__button--primary {
         background-color: #0d6efd;
         border-color: #0d6efd;
     }
 
-    .form__button--primary:hover {
+    .form__button--primary:hover:not(:disabled) {
         background-color: #0b5ed7;
         border-color: #0a58ca;
     }
 
-    .form__button--primary:active {
+    .form__button--primary:active:not(:disabled) {
         background-color: #0a58ca;
     }
 
@@ -124,8 +189,54 @@
         border-color: #6c757d;
     }
 
-    .form__button--secondary:hover {
+    .form__button--secondary:hover:not(:disabled) {
         background-color: #6c757d;
         color: #fff;
+    }
+
+    .table-wrapper {
+        margin-top: 8px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        max-height: calc(100vh - 420px);
+        min-height: 160px;
+        overflow-y: auto;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    .table__cell {
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+        white-space: nowrap;
+    }
+
+    thead .table__cell {
+        position: sticky;
+        top: 0;
+        background-color: #f8f9fa;
+        font-weight: 600;
+        z-index: 1;
+    }
+
+    tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .table__cell--checkbox {
+        width: 36px;
+        text-align: center;
+    }
+
+    .table__empty {
+        padding: 32px;
+        text-align: center;
+        color: #6c757d;
+        display: none;
     }
 </style>
